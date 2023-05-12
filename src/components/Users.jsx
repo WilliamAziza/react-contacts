@@ -8,9 +8,12 @@ class Users extends Component {
             <Container>
                 <Row>
                     {
-                        this.props.usersData.map((user,index)=>{
+                        this.props.usersData.map((user)=>{
                             return (
-                                <User userInfo={user} key={index}/>
+                                <User userInfo={user} 
+                                key={user.id} 
+                                deleteUser={this.props.deleteUser}
+                                editUser={this.props.editUser}/>
                             )
                         })
                     }
