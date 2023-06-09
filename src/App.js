@@ -1,62 +1,44 @@
 import React, { Component } from 'react';
-import { Container ,Row, Col} from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { Container, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Users from './components/Users';
 import AddForm from './components/AddForm';
 
 class App extends Component {
-  constructor (props) {
-    super (props)
-    this.state = {
-      users :[
-        {
-          name: "William",
-          email: "willie@gmail.com",
-          gen: 24,
-          id: "sadsd"
-        },
-        {
-          name: "John",
-          email: "john@gmail.com",
-          gen: 15,
-          id: "qwert"
-        }
-      ]
-    }
-  }
   addNewUser = (user) => {
-    user.id = Math.random().toString()
-    this.setState({
-      users:[...this.state.users, user]
-    })
+    user.id = Math.random().toString();
+    this.props.dispatch({ type: 'ADD_USER', payload: user });
   }
+
   deleteUser = (id) => {
-    let undeletedUsers = this.state.users.filter(user => user.id !== id);
-    this.setState({
-      users: undeletedUsers
-    })
-  };
-  editUser = (id, UpdatedUser) =>{
-    this.setState ({
-     users: this.state.users.map(user=> user.id===id ? UpdatedUser : user)
-    })
+    this.props.dispatch({ type: 'DELETE_USER', payload: id });
   }
+
+  editUser = (id, updatedUser) => {
+    this.props.dispatch({ type: 'EDIT_USER', payload: { id, user: updatedUser } });
+  }
+
   render() {
     return (
       <>
-       <Container fluid style={{marginTop:'2rem'}}>
-        <Row>
-          <Col md="4"> 
-          <AddForm addUser={this.addNewUser}/>
-          </Col>
-          <Col md="8"> 
-          <Users usersData= {this.state.users} deleteUser={this.deleteUser} editUser={this.editUser}/>
-          </Col>
-        </Row>
-        </Container> 
+        <Container fluid style={{ marginTop: '2rem' }}>
+          <Row>
+            <Col md="4">
+              <AddForm addUser={this.addNewUser} />
+            </Col>
+            <Col md="8">
+              <Users usersData={this.props.users} deleteUser={this.deleteUser} editUser={this.editUser} />
+            </Col>
+          </Row>
+        </Container>
       </>
     );
   }
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+  users: state.users
+});
+
+export default connect(mapStateToProps,)(App);
